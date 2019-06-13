@@ -110,13 +110,15 @@ RCT_REMAP_METHOD(data,
                 **/
                 
                 UIImage *sharedImage;
-                NSString *filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"RNSE_TEMP_IMG"];
-                NSString *fullPath = [filePath stringByAppendingPathExtension:@"png"];
-                
+                NSString *filePath = nil;
+                NSString *fullPath = nil;
+
                 if ([(NSObject *)item isKindOfClass:[UIImage class]]){
                     sharedImage = (UIImage *)item;
+                    fullPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"Image.png"];
                 }else if ([(NSObject *)item isKindOfClass:[NSURL class]]){
                     NSURL* url = (NSURL *)item;
+                    fullPath = [NSTemporaryDirectory() stringByAppendingPathComponent:url.lastPathComponent];
                     NSData *data = [NSData dataWithContentsOfURL:url];
                     sharedImage = [UIImage imageWithData:data];
                 }
@@ -126,6 +128,7 @@ RCT_REMAP_METHOD(data,
                 if(callback) {
                     callback(fullPath, [fullPath pathExtension], nil);
                 }
+
             }];
         } else if (textProvider) {
             [textProvider loadItemForTypeIdentifier:TEXT_IDENTIFIER options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
